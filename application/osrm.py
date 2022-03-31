@@ -73,12 +73,13 @@ class WayPoint(object):
 class OSRM(object):
     @staticmethod
     def get_all_nearest_nodes_of_location(location, number=1):
-        params = {
-            "number": number
-        }
-        URL = OSRM_BASIC_URL + "nearest/v1/driving/{},{}".format(location.longitude, location.latitude)
+        # params = {
+        #     "number": number
+        # }
+        URL = OSRM_BASIC_URL + "nearest/v1/driving/{},{}?number={}".format(
+            location.longitude, location.latitude, number)
         # print(URL)
-        response = requests.get(url=URL, params=params)
+        response = requests.get(url=URL)
         # print(response.json())
         return response.json()
 
