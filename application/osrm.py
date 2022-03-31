@@ -78,9 +78,9 @@ class OSRM(object):
             "number": number
         }
         URL = OSRM_BASIC_URL + "nearest/v1/driving/{},{}".format(location.longitude, location.latitude)
-        print(URL)
+        # print(URL)
         response = requests.get(url=URL, params=params)
-        print(response)
+        print(response.json())
         return response.json()
 
     @staticmethod
