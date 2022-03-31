@@ -111,7 +111,7 @@ if not os.path.exists(dir):
     raise("does not exists")
     
 if not os.path.exists(out_dir):
-     os.mkdir(out_dir)
+	os.mkdir(out_dir)
 
 
 for file_index in range(index_start_point_file, index_end_point_file):
