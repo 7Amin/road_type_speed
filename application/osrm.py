@@ -80,7 +80,7 @@ class OSRM(object):
         URL = OSRM_BASIC_URL + "nearest/v1/driving/{},{}".format(location.longitude, location.latitude)
         # print(URL)
         response = requests.get(url=URL, params=params)
-        print(response.json())
+        # print(response.json())
         return response.json()
 
     @staticmethod
@@ -167,7 +167,7 @@ for file_index in range(index_start_point_file, index_end_point_file):
         etas.append(eta)
         distances.append(distance)
     
-        if len(nearst_node_ids_of_start_validate_point) % 100 == 99:
+        if len(nearst_node_ids_of_start_validate_point) % 50 == 49:
             print(datetime.now())
             print(len(nearst_nodes_of_start_point))
             print("=======")
