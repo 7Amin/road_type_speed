@@ -12,8 +12,8 @@ from collections import Counter
 TrafficEvents = None
 
 chunk_size = 10 ** 3
-max_distance_from_node = 50 # Meter
-number_of_nearest_node = 5 # count
+max_distance_from_node = 50  # Meter
+number_of_nearest_node = 5  # count
 name_folder = "0"
 index_start_point_file = 0
 index_end_point_file = 499
@@ -77,7 +77,8 @@ class OSRM(object):
         }
         URL = OSRM_BASIC_URL + "nearest/v1/driving/{},{}".format(location.longitude, location.latitude)
         print(URL)
-        response = requests.get(url = URL, params = params)
+        response = requests.get(url=URL, params=params)
+        print(response.json())
         return response.json()
 
     @staticmethod
@@ -129,7 +130,6 @@ for file_index in range(index_start_point_file, index_end_point_file):
         speed = -100
         distance = -100
         eta = -100
-        print(data)
         start_location = Location([data["Start_Lng"], data["Start_Lat"]])
         if "EndPoint_Lng" in data and "End_Lat" in data and not math.isnan(data["End_Lat"]):
             end_location = Location([data["End_Lng"], data["End_Lat"]])
