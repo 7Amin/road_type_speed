@@ -39,8 +39,7 @@ BASE_PATH = "../data/"
 OUT_PATH = "type/"
  
 
-
-def read_big_data_by_filter_with_key_values(path, filters):
+def read_big_data_by_filter_with_key_values(path):
     data = None
     print("read csv data is started with file {}".format(path))
     for num, df in enumerate(pd.read_csv(path, chunksize=chunk_size), start=1):
@@ -81,7 +80,7 @@ class OSRM(object):
         response = requests.get(url = URL, params = params)
         return response.json()
 
-
+    @staticmethod
     def get_eta_and_distance(origin, destination):
         try:
             URL = OSRM_BASIC_URL + "route/v1/driving/{},{};{},{}".format(
@@ -101,7 +100,6 @@ class OSRM(object):
         return eta, distance, speed
 
 
-
 dir = os.path.join(BASE_PATH, name_folder)
 out_dir = os.path.join(BASE_PATH, "speed", name_folder)
 print(dir)
@@ -111,37 +109,35 @@ if not os.path.exists(dir):
     raise("does not exists")
     
 if not os.path.exists(out_dir):
-	os.mkdir(out_dir)
+    os.mkdir(out_dir)
 
 
 for file_index in range(index_start_point_file, index_end_point_file):
     print("file_index: {}".format(file_index))
     file_url = dir + "/file_{}.csv".format(file_index)
 
-    
-    traffic_events_data = read_big_data_by_filter_with_key_values(file_url, traffic_filters)
+    traffic_events_data = read_big_data_by_filter_with_key_values(file_url)
     speeds = []
-	distances = []
-	etas = []
+    distances = []
+    etas = []
     nearst_nodes_of_start_point = []
     nearst_nodes_of_end_point = []
     nearst_node_ids_of_start_validate_point = []
     nearst_node_ids_of_end_validate_point = []
     print("start file in {}".format(datetime.now()))
     for index, data in traffic_events_data.iterrows():
-    	speed = -100
-	    distance = -100
-	    eta = -100
+        speed = -100
+        distance = -100
+        eta = -100
+        print(data)
         start_location = Location([data["Start_Lng"], data["Start_Lat"]])
         if "EndPoint_Lng" in data and "End_Lat" in data and not math.isnan(data["End_Lat"]):
             end_location = Location([data["End_Lng"], data["End_Lat"]])
             eta, distance, speed = OSRM.get_eta_and_distance(start_location, end_location)
         else:
             end_location = Location([data["Start_Lng"], data["Start_Lat"]])
-
         nearst_nodes_start_location = OSRM.get_all_nearest_nodes_of_location(start_location, number_of_nearest_node)
         nearst_nodes_end_location = OSRM.get_all_nearest_nodes_of_location(end_location, number_of_nearest_node)
-    
     
         nearst_way_points_start_location = []
         start_ids = []
@@ -158,7 +154,6 @@ for file_index in range(index_start_point_file, index_end_point_file):
             if way_point.validate_way_point():
                 nearst_way_points_end_location.append(way_point)
                 end_ids.extend(way_point.nodes)
-            
 
         nearst_nodes_of_start_point.append(nearst_nodes_start_location)
         nearst_nodes_of_end_point.append(nearst_nodes_end_location)
