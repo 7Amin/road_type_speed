@@ -79,7 +79,26 @@ class OSRM(object):
         URL = OSRM_BASIC_URL + "nearest/v1/driving/{},{}".format(location.longitude, location.latitude)
         print(URL)
         response = requests.get(url = URL, params = params)
-        return response.json() 
+        return response.json()
+
+
+    def get_eta_and_distance(origin, destination):
+        try:
+            URL = OSRM_BASIC_URL + "route/v1/driving/{},{};{},{}".format(
+                origin.longitude, origin.latitude, destination.longitude, destination.latitude)
+            print(URL)
+            response = requests.get(url = URL)
+            result = response.json()
+            routes = result["routes"]
+            route = routes[0]
+            eta = route["duration"]
+            distance = route["distance"]
+            speed = distance / eta
+        except:
+            eta = -100
+            distance = -100
+            speed = -100
+        return eta, distance, speed
 
 
 
@@ -94,21 +113,29 @@ if not os.path.exists(dir):
 if not os.path.exists(out_dir):
      os.mkdir(out_dir)
 
+
 for file_index in range(index_start_point_file, index_end_point_file):
     print("file_index: {}".format(file_index))
     file_url = dir + "/file_{}.csv".format(file_index)
+
     
     traffic_events_data = read_big_data_by_filter_with_key_values(file_url, traffic_filters)
-    
+    speeds = []
+	distances = []
+	etas = []
     nearst_nodes_of_start_point = []
     nearst_nodes_of_end_point = []
     nearst_node_ids_of_start_validate_point = []
     nearst_node_ids_of_end_validate_point = []
     print("start file in {}".format(datetime.now()))
     for index, data in traffic_events_data.iterrows():
+    	speed = -100
+	    distance = -100
+	    eta = -100
         start_location = Location([data["Start_Lng"], data["Start_Lat"]])
         if "EndPoint_Lng" in data and "End_Lat" in data and not math.isnan(data["End_Lat"]):
             end_location = Location([data["End_Lng"], data["End_Lat"]])
+            eta, distance, speed = OSRM.get_eta_and_distance(start_location, end_location)
         else:
             end_location = Location([data["Start_Lng"], data["Start_Lat"]])
 
@@ -138,18 +165,28 @@ for file_index in range(index_start_point_file, index_end_point_file):
 
         nearst_node_ids_of_start_validate_point.append(start_ids)
         nearst_node_ids_of_end_validate_point.append(end_ids)
+
+        speeds.append(speed)
+        etas.append(eta)
+        distances.append(distance)
     
         if len(nearst_node_ids_of_start_validate_point) % 100 == 99:
             print(datetime.now())
             print(len(nearst_nodes_of_start_point))
             print("=======")
+
     traffic_events_data["nearst_nodes_of_start_point"] = nearst_nodes_of_start_point
     traffic_events_data["nearst_nodes_of_end_point"] = nearst_nodes_of_end_point
     traffic_events_data["nearst_nodes_ids_of_start_point"] = nearst_node_ids_of_start_validate_point
     traffic_events_data["nearst_nodes_ids_of_end_point"] = nearst_node_ids_of_end_validate_point
-    
+    traffic_events_data["avg_speed"] = speeds
+    traffic_events_data["distance"] = distances
+    traffic_events_data["eta"] = etas
+
     output_file_url = out_dir + "/file_{}.csv".format(file_index)
     traffic_events_data.to_csv (output_file_url, index = False, header=True)
     print(traffic_events_data.columns)
+    print("{} done".format(output_file_url))
+    print("end time is {}".format(datetime.now()))
         
 print("end")
