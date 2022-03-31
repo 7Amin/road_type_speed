@@ -34,7 +34,7 @@ name_folder = args.name_folder
 index_start_point_file = args.index_start_point_file
 index_end_point_file = args.index_end_point_file
 
-OSRM_BASIC_URL = "localhost:3505/"
+OSRM_BASIC_URL = "http://localhost:3505/"
 # OSRM_BASIC_URL = "http://router.project-osrm.org/"
 BASE_PATH = "../data/"
 OUT_PATH = "type/"
