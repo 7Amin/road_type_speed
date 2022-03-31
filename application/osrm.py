@@ -34,7 +34,9 @@ name_folder = args.name_folder
 index_start_point_file = args.index_start_point_file
 index_end_point_file = args.index_end_point_file
 
-OSRM_BASIC_URL = "https://usaeta.bluebitsoft.com/"
+# OSRM_BASIC_URL = "https://usaeta.bluebitsoft.com/"
+
+OSRM_BASIC_URL = "http://router.project-osrm.org/"
 BASE_PATH = "../data/"
 OUT_PATH = "type/"
  
@@ -78,7 +80,7 @@ class OSRM(object):
         URL = OSRM_BASIC_URL + "nearest/v1/driving/{},{}".format(location.longitude, location.latitude)
         print(URL)
         response = requests.get(url=URL, params=params)
-        print(response.json())
+        print(response)
         return response.json()
 
     @staticmethod
@@ -87,7 +89,7 @@ class OSRM(object):
             URL = OSRM_BASIC_URL + "route/v1/driving/{},{};{},{}".format(
                 origin.longitude, origin.latitude, destination.longitude, destination.latitude)
             print(URL)
-            response = requests.get(url = URL)
+            response = requests.get(url=URL)
             result = response.json()
             routes = result["routes"]
             route = routes[0]
