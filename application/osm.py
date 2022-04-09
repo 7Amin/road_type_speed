@@ -85,8 +85,14 @@ def read_data(path):
     return data
 
 
-def most_frequent(List): 
-    occurence_count = Counter(List) 
+def most_frequent(List):
+    data = []
+    for l in List:
+        if not(l == "None"):
+            data.append(l)
+    occurence_count = Counter(data)
+    if len(data) == 0:
+        return "None"
     return occurence_count.most_common(1)[0][0]
 
 
@@ -123,9 +129,13 @@ for i in range(index_start_point_file, index_end_point_file):
         type_of_ways_all_points.append(type_of_road)
     
     traffic_events_data["type_of_roads"] = type_of_ways_all_points
+    traffic_events_data = traffic_events_data.drop("nearst_nodes_ids_of_start_point", axis=1)
+    traffic_events_data = traffic_events_data.drop("nearst_nodes_ids_of_end_point", axis=1)
+    traffic_events_data = traffic_events_data.drop("nearst_nodes_of_end_point", axis=1)
+    traffic_events_data = traffic_events_data.drop("nearst_nodes_of_start_point", axis=1)
     
     output_file_url = out_dir + "/" + "file_" + str(i) + ".csv"
-    traffic_events_data.to_csv (output_file_url, index = False, header=True)
+    traffic_events_data.to_csv (output_file_url, index=False, header=True)
     print(traffic_events_data.columns)
     print("{} done".format(output_file_url))
     print("end time is {}".format(datetime.now()))
