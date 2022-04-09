@@ -13,14 +13,14 @@ from collections import Counter
 TrafficEvents = None
 
 chunk_size = 1000
-max_distance_from_node = 50 # Meter
-number_of_nearest_node = 5 # count
+max_distance_from_node = 50  # Meter
+number_of_nearest_node = 5  # count
 name_folder = "0"
 index_start_point_file = 0
 index_end_point_file = 499
 
 OSM_BASIC_URL = "https://api.openstreetmap.org/api/0.6/"
-BASE_PATH = "../data/"
+BASE_PATH = "../data/speed/"
 OUT_PATH = "type/"
 
 parser = argparse.ArgumentParser(description='Process some integers.')
@@ -39,7 +39,6 @@ name_folder = args.name_folder
 index_start_point_file = args.index_start_point_file
 index_end_point_file = args.index_end_point_file
 
-    
 
 class OSM(object):
     @staticmethod
@@ -80,11 +79,11 @@ class OSM(object):
 
 
 def read_data(path):
-    data = None
     print("read csv data is started with file {}".format(path))
     data = pd.read_csv(path)
     print("reading is finished length is {} ".format(len(data)))
     return data
+
 
 def most_frequent(List): 
     occurence_count = Counter(List) 
@@ -101,7 +100,7 @@ for i in range(index_start_point_file, index_end_point_file):
     type_of_ways_all_points = []
     print("file id is {}".format(i))
     print("start time is {}".format(datetime.now()))
-    path = BASE_PATH + str(name_folder) + "/" + "file_"+ str(i) + ".csv"
+    path = BASE_PATH + str(name_folder) + "/" + "file_" + str(i) + ".csv"
     
     traffic_events_data = read_data(path)
     for index, data in traffic_events_data.iterrows():
@@ -125,7 +124,7 @@ for i in range(index_start_point_file, index_end_point_file):
     
     traffic_events_data["type_of_roads"] = type_of_ways_all_points
     
-    output_file_url = out_dir +  "/" + "file_"+ str(i) + ".csv"
+    output_file_url = out_dir + "/" + "file_" + str(i) + ".csv"
     traffic_events_data.to_csv (output_file_url, index = False, header=True)
     print(traffic_events_data.columns)
     print("{} done".format(output_file_url))

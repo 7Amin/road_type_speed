@@ -167,7 +167,7 @@ for file_index in range(index_start_point_file, index_end_point_file):
         etas.append(eta)
         distances.append(distance)
     
-        if len(nearst_node_ids_of_start_validate_point) % 50 == 49:
+        if len(nearst_node_ids_of_start_validate_point) % 250 == 249:
             print(datetime.now())
             print(len(nearst_nodes_of_start_point))
             print("=======")
@@ -181,7 +181,7 @@ for file_index in range(index_start_point_file, index_end_point_file):
     traffic_events_data["eta"] = etas
 
     output_file_url = out_dir + "/file_{}.csv".format(file_index)
-    traffic_events_data.to_csv (output_file_url, index = False, header=True)
+    traffic_events_data.to_csv (output_file_url, index=False, header=True)
     print(traffic_events_data.columns)
     print("{} done".format(output_file_url))
     print("end time is {}".format(datetime.now()))
